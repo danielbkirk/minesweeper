@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">minesweeper</a> &gt; <a href="index.source.html" class="el_package">oop.blueprints</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">package oop.blueprints;
+import java.util.Random;
+
+public class Board {
+<span class="nc" id="L5">    Random rand = new Random();</span>
+    //Attributes
+    String difficulty;
+    int height;
+    int width;
+    int noOfMines;
+    Tile[][] myBoard;
+    int minesAssigned;
+
+    //constructor
+    /*Later will add variable settings at the start of the game*/
+<span class="nc" id="L16">    public Board(int boardHeight, int boardWidth, int noOfMines){</span>
+<span class="nc" id="L17">        this.height = boardHeight;</span>
+<span class="nc" id="L18">        this.width = boardWidth;</span>
+<span class="nc" id="L19">        this.noOfMines = noOfMines;</span>
+<span class="nc" id="L20">        this.minesAssigned = 0;</span>
+<span class="nc" id="L21">        myBoard = new Tile[this.height][this.width];</span>
+<span class="nc" id="L22">        assignMines(this.height, this.width, this.noOfMines, this.minesAssigned);</span>
+
+<span class="nc" id="L24">        System.out.println(&quot;Your board has been created, have fun!&quot;);</span>
+
+<span class="nc" id="L26">    }</span>
+    //needs height, width, no of mines
+    public void assignMines(int x, int y, int totalMines, int minesUsed) {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">        while(minesUsed &lt; totalMines) {</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">            for (int i = 0; i &lt; x; i++) {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">                for (int j = 0; j &lt; y; j++) {</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">                    if (minesUsed &lt;= totalMines) {</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">                        if (rand.nextBoolean()) {</span>
+<span class="nc" id="L34">                            myBoard[i][j] = new Tile(true);</span>
+<span class="nc" id="L35">                            minesUsed++;</span>
+                        } else {
+<span class="nc" id="L37">                            myBoard[i][j] = new Tile(false);</span>
+                        }
+                    } else {
+<span class="nc" id="L40">                        myBoard[i][j] = new Tile(false);</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L45">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
