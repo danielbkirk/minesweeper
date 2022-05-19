@@ -113,11 +113,9 @@ public class Board {
     }
 
 
-//    public String selectTile(int x, int y){
-//        if( getHasMine(x, y) ){
-//
-//        }
-//    }
+    public void selectTile(int x, int y){
+        findDisplayString( x, y );
+    }
     public boolean getHasMine(int x, int y){
         return myBoard[y][x].getMine();
     }
