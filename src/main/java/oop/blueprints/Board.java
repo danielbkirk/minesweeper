@@ -4,44 +4,147 @@ import java.util.Random;
 public class Board {
     Random rand = new Random();
     //Attributes
-    String difficulty;
+    //String difficulty;
     int height;
     int width;
     int noOfMines;
     Tile[][] myBoard;
-    int minesAssigned;
+    int minesAssigned = 0;
+
+    boolean gameOver;
+    boolean gameWon;
+    int emptyTiles;
 
     //constructor
-    /*Later will add variable settings at the start of the game*/
-    public Board(int boardHeight, int boardWidth, int noOfMines){
+    //Needs to calculate the number of surrounding mines.
+
+    public Board(int boardWidth, int boardHeight, int noOfMines){
         this.height = boardHeight;
         this.width = boardWidth;
         this.noOfMines = noOfMines;
-        this.minesAssigned = 0;
+        this.gameOver = false;
+        this.gameWon = false;
+        this.emptyTiles = ( this.height * this.width ) - this.noOfMines;
         myBoard = new Tile[this.height][this.width];
-        assignMines(this.height, this.width, this.noOfMines, this.minesAssigned);
+        assignTiles();
+        assignMines(this.height, this.width, this.noOfMines);
+
+        for ( int i = 0; i < this.height; i++){
+            for (int j = 0; j < this.width; j++){
+                calcNoSurroundingMines( i, j);
+            }
+        }
+        buildBoard();
 
         System.out.println("Your board has been created, have fun!");
 
     }
+
+    public boolean getGameOver(){
+        return this.gameOver;
+    }
+
+    public void setGameOver(){
+        this.gameOver = true;
+    }
+
+    public boolean getGameWon(){
+        return this.gameWon;
+    }
+
+    public void setGameWon(){
+        this.gameWon = true;
+    }
+
+    public void assignTiles(){
+        for(int i = 0; i < this.height; i++){
+            for (int j = 0; j < this.width; j++){
+                this.myBoard[i][j] = new Tile(false);
+            }
+        }
+    }
     //needs height, width, no of mines
-    public void assignMines(int x, int y, int totalMines, int minesUsed) {
-        while(minesUsed < totalMines) {
-            for (int i = 0; i < x; i++) {
-                for (int j = 0; j < y; j++) {
-                    if (minesUsed <= totalMines) {
-                        if (rand.nextBoolean()) {
-                            myBoard[i][j] = new Tile(true);
-                            minesUsed++;
-                        } else {
-                            myBoard[i][j] = new Tile(false);
-                        }
-                    } else {
-                        myBoard[i][j] = new Tile(false);
+    //Randomly assigns mines until quota is filled.
+    //Keeps going until all are used up.
+    //If it loops won't reassign a mine to a tile that already has one
+    public void assignMines(int y, int x, int totalMines) {
+        while(this.minesAssigned < totalMines) {
+            int randX = rand.nextInt(x);
+            int randY = rand.nextInt(y);
+            if(myBoard[randY][randX].getMine() == false){
+                myBoard[randY][randX].setMine();
+                this.minesAssigned++;
+            }
+        }
+    }
+
+    //calculate the number of mines surrounding the tile
+    public void calcNoSurroundingMines( int posY, int posX){
+        for (int i = posY - 1; i <= posY + 1; i++){
+            for (int j = posX - 1; j <= posX + 1; j++){
+                if ( !(i  < 0 || j < 0 || i >= this.height || j >= this.width || (i == posY && j == posX) ) ){
+                    if (myBoard[i][j].getMine()) {
+                        myBoard[posY][posX].setMinesAround();
                     }
                 }
             }
         }
+    }
+
+
+    public int getNoOfSurroundingMines(int y, int x){
+        return myBoard[y][x].getMinesAround();
+    }
+
+    public void buildBoard(){
+        String numberRow = "x\\y ";
+        for (int i = 1; i <= this.width; i++){
+            numberRow = numberRow  + i + "   ";
+        }
+        System.out.println(numberRow);
+        //printing out grid
+        for (int j = 0; j < this.height; j++) {
+            String row = 1+j + " | ";
+            for (int i = 0; i < this.width; i++) {
+                row = row +  findDisplayString(i, j) + " | ";
+            }
+            System.out.println(row);
+        }
+    }
+
+
+//    public String selectTile(int x, int y){
+//        if( getHasMine(x, y) ){
+//
+//        }
+//    }
+    public boolean getHasMine(int x, int y){
+        return myBoard[y][x].getMine();
+    }
+
+    //find display string - takes x and y value
+    //if it does have a bomb display B and change to game over is true
+    //if it has been used but does not have a bomb - display number of surrounding bombs
+
+    public String findDisplayString(int x, int y){
+        String returnedString = "";
+        if( ! myBoard[y][x].beenUsed){
+            returnedString = "?";
+        } else{
+            if ( myBoard[y][x].beenUsed && myBoard[y][x].getMine()){
+                returnedString = "B";
+                setGameOver();
+            } else{
+                this.emptyTiles--;
+                returnedString = "" + getNoOfSurroundingMines(y, x) +"";
+                if(this.emptyTiles == 0){
+                    setGameWon();
+                }
+            }
+            myBoard[y][x].useTile();
+        }
+
+        return returnedString;
     }
 
 }

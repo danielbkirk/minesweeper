@@ -24,9 +24,13 @@ public class Tile {
         this.beenUsed = true;
     }
 
-    public boolean assignedMine(){
+    public boolean getMine(){
         return this.hasMine;
     }
+    public void setMine(){ this.hasMine = true;}
+
+    public void setMinesAround(){this.minesAround++;}
+    public int getMinesAround(){return this.minesAround;}
 
 //    public boolean useFlag(){
 //
