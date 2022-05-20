@@ -125,7 +125,9 @@ public class Board {
 
     public String findDisplayString(int x, int y){
         String returnedString = "";
-        if( ! myBoard[y][x].beenUsed){
+        if( ! myBoard[y][x].beenUsed && myBoard[y][x].getFlag()){
+            returnedString = "F";
+        } else if ( !myBoard[y][x].beenUsed ){
             returnedString = ".";
         } else{
             if ( myBoard[y][x].beenUsed && myBoard[y][x].getMine()){
@@ -143,16 +145,20 @@ public class Board {
         return returnedString;
     }
 
+    public void setFlag(int x, int y){
+        myBoard[y][x].setFlag();
+    }
+
     //sets all bombs to show - for end of game
-//    public void setAllMines(){
-//        for (int i = 0; i < this.height; i++){
-//            for (int j = 0; i < this.width; j++){
-//                if( myBoard[i][j].getMine() ){
-//                    myBoard[i][j].useTile();
-//                }
-//            }
-//        }
-//    }
+    public void displayAllMines(){
+        for (int i = 0; i < this.height; i++){
+            for (int j = 0; j < this.width; j++){
+                if( myBoard[i][j].getMine() ){
+                    myBoard[i][j].useTile();
+                }
+            }
+        }
+    }
 
 
 }
