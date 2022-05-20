@@ -16,8 +16,8 @@ public class Main {
         int totalMines = (int) Math.ceil((x * y) / 5.0);
 
         /*TO DO
-        * When board size goes > 10 in x, numbers don't line up properly
-        * When selecting a bomb reveal all bombs on the board
+        * When board size goes > 10 in x, numbers don't line up properly -
+        * If tile already selected make it so you cant select it again
         * when selecting a tile with bomb count 0 reveal all surrounding tiles.
         * */
 
@@ -26,20 +26,29 @@ public class Main {
         //while game not over run the loop
         while (!myBoard.getGameOver() && !myBoard.getGameWon()){
             myBoard.buildBoard();
+            System.out.println(myBoard.getEmptyTiles());
             System.out.println("Type 1 to reveal a tile or type 2 to toggle a flag");
             int clickType = myScanner.nextInt();
-            int[] guess = new int[2];
-            System.out.println("Please enter a x value");
-            guess[0] = myScanner.nextInt() - 1;
-            System.out.println("Please enter a y value");
-            guess[1] = myScanner.nextInt() - 1;
-            if (clickType == 1) {
-                myBoard.selectTile(guess[0], guess[1]);
-                if (myBoard.getHasMine(guess[0], guess[1])) {
-                    myBoard.setGameOver();
+            if ( clickType == 1 ||  clickType == 2  ) {
+                int[] guess = new int[2];
+                System.out.println("Please enter a x value");
+                guess[0] = myScanner.nextInt() - 1;
+                System.out.println("Please enter a y value");
+                guess[1] = myScanner.nextInt() - 1;
+                if (clickType == 1) {
+                    myBoard.selectTile(guess[0], guess[1]);
+                    if (myBoard.getHasMine(guess[0], guess[1])) {
+                        myBoard.setGameOver();
+                    } else if (myBoard.getEmptyTiles() == 0) {
+                        System.out.println("Test to see if the code reaches this part");
+                        myBoard.setGameWon();
+                    }
                 }
-            } else if (clickType == 2){
-                myBoard.setFlag(guess[0], guess[1]);
+                if (clickType == 2) {
+                    myBoard.setFlag(guess[0], guess[1]);
+                }
+            } else{
+                System.out.println("Please select a valid option");
             }
         }
 

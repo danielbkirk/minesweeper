@@ -69,7 +69,7 @@ public class Board {
         while(this.minesAssigned < totalMines) {
             int randX = rand.nextInt(x);
             int randY = rand.nextInt(y);
-            if(myBoard[randY][randX].getMine() == false){
+            if(! myBoard[randY][randX].getMine() ){
                 myBoard[randY][randX].setMine();
                 this.minesAssigned++;
             }
@@ -112,8 +112,9 @@ public class Board {
 
 
     public void selectTile(int x, int y){
+        setEmptyTiles();
         myBoard[y][x].useTile();
-        findDisplayString( x, y );
+
     }
     public boolean getHasMine(int x, int y){
         return myBoard[y][x].getMine();
@@ -124,7 +125,7 @@ public class Board {
     //if it has been used but does not have a bomb - display number of surrounding bombs
 
     public String findDisplayString(int x, int y){
-        String returnedString = "";
+        String returnedString;
         if( ! myBoard[y][x].beenUsed && myBoard[y][x].getFlag()){
             returnedString = "F";
         } else if ( !myBoard[y][x].beenUsed ){
@@ -132,13 +133,13 @@ public class Board {
         } else{
             if ( myBoard[y][x].beenUsed && myBoard[y][x].getMine()){
                 returnedString = "B";
-                setGameOver();
+
             } else{
-                this.emptyTiles--;
                 returnedString = "" + getNoOfSurroundingMines(y, x) +"";
-                if(this.emptyTiles == 0){
-                    setGameWon();
+                if(getNoOfSurroundingMines(y, x) == 0){
+                    cascadeTiles(x, y);
                 }
+
             }
         }
 
@@ -160,5 +161,25 @@ public class Board {
         }
     }
 
+    public void setEmptyTiles(){
+        this.emptyTiles = this.emptyTiles - 1;
+    }
+
+    public int getEmptyTiles(){
+        return this.emptyTiles;
+    }
+    public void cascadeTiles(int x, int y){
+        for (int i = y-1; i <= y+1; i++){
+            for ( int j = x-1; j <= x+1; j++){
+                if ( !( i  < 0 || j < 0 || i >= this.height || j >= this.width ) ) {
+                    if( !myBoard[i][j].beenUsed){
+                        selectTile(j, i);
+                    }
+
+                }
+            }
+        }
+
+    }
 
 }
