@@ -4,45 +4,181 @@ import java.util.Random;
 public class Board {
 <span class="nc" id="L5">    Random rand = new Random();</span>
     //Attributes
-    String difficulty;
+    //String difficulty;
     int height;
     int width;
     int noOfMines;
     Tile[][] myBoard;
-    int minesAssigned;
+<span class="nc" id="L12">    int minesAssigned = 0;</span>
+
+    boolean gameOver;
+    boolean gameWon;
+    int emptyTiles;
 
     //constructor
-    /*Later will add variable settings at the start of the game*/
-<span class="nc" id="L16">    public Board(int boardHeight, int boardWidth, int noOfMines){</span>
-<span class="nc" id="L17">        this.height = boardHeight;</span>
-<span class="nc" id="L18">        this.width = boardWidth;</span>
-<span class="nc" id="L19">        this.noOfMines = noOfMines;</span>
-<span class="nc" id="L20">        this.minesAssigned = 0;</span>
-<span class="nc" id="L21">        myBoard = new Tile[this.height][this.width];</span>
-<span class="nc" id="L22">        assignMines(this.height, this.width, this.noOfMines, this.minesAssigned);</span>
+    //Needs to calculate the number of surrounding mines.
 
-<span class="nc" id="L24">        System.out.println(&quot;Your board has been created, have fun!&quot;);</span>
+<span class="nc" id="L21">    public Board(int boardWidth, int boardHeight, int noOfMines){</span>
+<span class="nc" id="L22">        this.height = boardHeight;</span>
+<span class="nc" id="L23">        this.width = boardWidth;</span>
+<span class="nc" id="L24">        this.noOfMines = noOfMines;</span>
+<span class="nc" id="L25">        this.gameOver = false;</span>
+<span class="nc" id="L26">        this.gameWon = false;</span>
+<span class="nc" id="L27">        this.emptyTiles = ( this.height * this.width ) - this.noOfMines;</span>
+<span class="nc" id="L28">        myBoard = new Tile[this.height][this.width];</span>
+<span class="nc" id="L29">        assignTiles();</span>
+<span class="nc" id="L30">        assignMines(this.height, this.width, this.noOfMines);</span>
 
-<span class="nc" id="L26">    }</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        for ( int i = 0; i &lt; this.height; i++){</span>
+<span class="nc bnc" id="L33" title="All 2 branches missed.">            for (int j = 0; j &lt; this.width; j++){</span>
+<span class="nc" id="L34">                calcNoSurroundingMines( i, j);</span>
+            }
+        }
+<span class="nc" id="L37">        System.out.println(&quot;Your board has been created, have fun!&quot;);</span>
+
+<span class="nc" id="L39">    }</span>
+
+    public boolean getGameOver(){
+<span class="nc" id="L42">        return this.gameOver;</span>
+    }
+
+    public void setGameOver(){
+<span class="nc" id="L46">        this.gameOver = true;</span>
+<span class="nc" id="L47">    }</span>
+
+    public boolean getGameWon(){
+<span class="nc" id="L50">        return this.gameWon;</span>
+    }
+
+    public void setGameWon(){
+<span class="nc" id="L54">        this.gameWon = true;</span>
+<span class="nc" id="L55">    }</span>
+
+    public void assignTiles(){
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for(int i = 0; i &lt; this.height; i++){</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            for (int j = 0; j &lt; this.width; j++){</span>
+<span class="nc" id="L60">                this.myBoard[i][j] = new Tile(false);</span>
+            }
+        }
+<span class="nc" id="L63">    }</span>
     //needs height, width, no of mines
-    public void assignMines(int x, int y, int totalMines, int minesUsed) {
-<span class="nc bnc" id="L29" title="All 2 branches missed.">        while(minesUsed &lt; totalMines) {</span>
-<span class="nc bnc" id="L30" title="All 2 branches missed.">            for (int i = 0; i &lt; x; i++) {</span>
-<span class="nc bnc" id="L31" title="All 2 branches missed.">                for (int j = 0; j &lt; y; j++) {</span>
-<span class="nc bnc" id="L32" title="All 2 branches missed.">                    if (minesUsed &lt;= totalMines) {</span>
-<span class="nc bnc" id="L33" title="All 2 branches missed.">                        if (rand.nextBoolean()) {</span>
-<span class="nc" id="L34">                            myBoard[i][j] = new Tile(true);</span>
-<span class="nc" id="L35">                            minesUsed++;</span>
-                        } else {
-<span class="nc" id="L37">                            myBoard[i][j] = new Tile(false);</span>
-                        }
-                    } else {
-<span class="nc" id="L40">                        myBoard[i][j] = new Tile(false);</span>
+    //Randomly assigns mines until quota is filled.
+    //Keeps going until all are used up.
+    //If it loops won't reassign a mine to a tile that already has one
+    public void assignMines(int y, int x, int totalMines) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        while(this.minesAssigned &lt; totalMines) {</span>
+<span class="nc" id="L70">            int randX = rand.nextInt(x);</span>
+<span class="nc" id="L71">            int randY = rand.nextInt(y);</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">            if(! myBoard[randY][randX].getMine() ){</span>
+<span class="nc" id="L73">                myBoard[randY][randX].setMine();</span>
+<span class="nc" id="L74">                this.minesAssigned++;</span>
+            }
+<span class="nc" id="L76">        }</span>
+<span class="nc" id="L77">    }</span>
+
+    //calculate the number of mines surrounding the tile
+    public void calcNoSurroundingMines( int posY, int posX){
+<span class="nc bnc" id="L81" title="All 2 branches missed.">        for (int i = posY - 1; i &lt;= posY + 1; i++){</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            for (int j = posX - 1; j &lt;= posX + 1; j++){</span>
+<span class="nc bnc" id="L83" title="All 12 branches missed.">                if ( !(i  &lt; 0 || j &lt; 0 || i &gt;= this.height || j &gt;= this.width || (i == posY &amp;&amp; j == posX) ) ){</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">                    if (myBoard[i][j].getMine()) {</span>
+<span class="nc" id="L85">                        myBoard[posY][posX].setMinesAround();</span>
                     }
                 }
             }
         }
-<span class="nc" id="L45">    }</span>
+<span class="nc" id="L90">    }</span>
+
+
+    public int getNoOfSurroundingMines(int y, int x){
+<span class="nc" id="L94">        return myBoard[y][x].getMinesAround();</span>
+    }
+
+    public void buildBoard(){
+<span class="nc" id="L98">        String numberRow = &quot;y\\x &quot;;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        for (int i = 1; i &lt;= this.width; i++){</span>
+<span class="nc" id="L100">            numberRow = numberRow  + i + &quot;  &quot;;</span>
+        }
+<span class="nc" id="L102">        System.out.println(numberRow);</span>
+        //printing out grid
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        for (int j = 0; j &lt; this.height; j++) {</span>
+<span class="nc" id="L105">            String row = 1+j + &quot;   &quot;;</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            for (int i = 0; i &lt; this.width; i++) {</span>
+<span class="nc" id="L107">                row = row +  findDisplayString(i, j) + &quot;  &quot;;</span>
+            }
+<span class="nc" id="L109">            System.out.println(row);</span>
+        }
+<span class="nc" id="L111">    }</span>
+
+
+    public void selectTile(int x, int y){
+<span class="nc" id="L115">        setEmptyTiles();</span>
+<span class="nc" id="L116">        myBoard[y][x].useTile();</span>
+
+<span class="nc" id="L118">    }</span>
+    public boolean getHasMine(int x, int y){
+<span class="nc" id="L120">        return myBoard[y][x].getMine();</span>
+    }
+
+    //find display string - takes x and y value
+    //if it does have a bomb display B and change to game over is true
+    //if it has been used but does not have a bomb - display number of surrounding bombs
+
+    public String findDisplayString(int x, int y){
+        String returnedString;
+<span class="nc bnc" id="L129" title="All 4 branches missed.">        if( ! myBoard[y][x].beenUsed &amp;&amp; myBoard[y][x].getFlag()){</span>
+<span class="nc" id="L130">            returnedString = &quot;F&quot;;</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">        } else if ( !myBoard[y][x].beenUsed ){</span>
+<span class="nc" id="L132">            returnedString = &quot;.&quot;;</span>
+        } else{
+<span class="nc bnc" id="L134" title="All 4 branches missed.">            if ( myBoard[y][x].beenUsed &amp;&amp; myBoard[y][x].getMine()){</span>
+<span class="nc" id="L135">                returnedString = &quot;B&quot;;</span>
+
+            } else{
+<span class="nc" id="L138">                returnedString = &quot;&quot; + getNoOfSurroundingMines(y, x) +&quot;&quot;;</span>
+<span class="nc bnc" id="L139" title="All 2 branches missed.">                if(getNoOfSurroundingMines(y, x) == 0){</span>
+<span class="nc" id="L140">                    cascadeTiles(x, y);</span>
+                }
+
+            }
+        }
+
+<span class="nc" id="L146">        return returnedString;</span>
+    }
+
+    public void setFlag(int x, int y){
+<span class="nc" id="L150">        myBoard[y][x].setFlag();</span>
+<span class="nc" id="L151">    }</span>
+
+    //sets all bombs to show - for end of game
+    public void displayAllMines(){
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        for (int i = 0; i &lt; this.height; i++){</span>
+<span class="nc bnc" id="L156" title="All 2 branches missed.">            for (int j = 0; j &lt; this.width; j++){</span>
+<span class="nc bnc" id="L157" title="All 2 branches missed.">                if( myBoard[i][j].getMine() ){</span>
+<span class="nc" id="L158">                    myBoard[i][j].useTile();</span>
+                }
+            }
+        }
+<span class="nc" id="L162">    }</span>
+
+    public void setEmptyTiles(){
+<span class="nc" id="L165">        this.emptyTiles = this.emptyTiles - 1;</span>
+<span class="nc" id="L166">    }</span>
+
+    public int getEmptyTiles(){
+<span class="nc" id="L169">        return this.emptyTiles;</span>
+    }
+    public void cascadeTiles(int x, int y){
+<span class="nc bnc" id="L172" title="All 2 branches missed.">        for (int i = y-1; i &lt;= y+1; i++){</span>
+<span class="nc bnc" id="L173" title="All 2 branches missed.">            for ( int j = x-1; j &lt;= x+1; j++){</span>
+<span class="nc bnc" id="L174" title="All 8 branches missed.">                if ( !( i  &lt; 0 || j &lt; 0 || i &gt;= this.height || j &gt;= this.width ) ) {</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                    if( !myBoard[i][j].beenUsed){</span>
+<span class="nc" id="L176">                        selectTile(j, i);</span>
+                    }
+                }
+            }
+        }
+<span class="nc" id="L181">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

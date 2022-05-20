@@ -24,12 +24,24 @@ public class Tile {
 <span class="nc" id="L24">        this.beenUsed = true;</span>
 <span class="nc" id="L25">    }</span>
 
-    public boolean assignedMine(){
-<span class="fc" id="L28">        return this.hasMine;</span>
+    public boolean getMine(){
+<span class="nc" id="L28">        return this.hasMine;</span>
     }
+<span class="nc" id="L30">    public void setMine(){ this.hasMine = true;}</span>
 
-//    public boolean useFlag(){
-//
-//    }
+<span class="nc" id="L32">    public void setMinesAround(){this.minesAround++;}</span>
+<span class="nc" id="L33">    public int getMinesAround(){return this.minesAround;}</span>
+
+    public void setFlag(){
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        if(this.flag){</span>
+<span class="nc" id="L37">            this.flag = false;</span>
+        } else{
+<span class="nc" id="L39">            this.flag = true;</span>
+        }
+<span class="nc" id="L41">    }</span>
+
+    public boolean getFlag(){
+<span class="nc" id="L44">        return this.flag;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
