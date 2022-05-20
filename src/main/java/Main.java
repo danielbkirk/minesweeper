@@ -9,9 +9,10 @@ public class Main {
     public static void main(String[] args){
         Scanner myScanner = new Scanner(System.in);
         System.out.println("Welcome to Minesweeper, are you ready to play!");
-        System.out.println("We will be testing a 4x4 grid");
-        int x = 4;
-        int y = 4;
+        System.out.println("How wide would you like your board to be?");
+        int x = myScanner.nextInt();
+        System.out.println("How high would you like your board to be?");
+        int y = myScanner.nextInt();
         int totalMines = 5;
 
         /*TO DO
@@ -24,18 +25,28 @@ public class Main {
 
         //while game not over run the loop
         while (!myBoard.getGameOver() && !myBoard.getGameWon()){
+            myBoard.buildBoard();
             int[] guess = new int[2];
             System.out.println("Please enter a x value");
-            guess[0] = myScanner.nextInt();
+            guess[0] = myScanner.nextInt() - 1 ;
             System.out.println("Please enter a y value");
-            guess[1] = myScanner.nextInt();
+            guess[1] = myScanner.nextInt() - 1 ;
+
+            myBoard.selectTile(guess[0], guess[1]);
+
             if( myBoard.getHasMine(guess[0], guess[1]) ){
                 myBoard.setGameOver();
-            } else{
-
             }
-
         }
-        System.out.println("Game Over");
+
+        if( myBoard.getGameWon() ) {
+            System.out.println("Congratulations you won the game!");
+        } else{
+            //insert logic to display all bombs
+            //myBoard.setAllMines();
+            myBoard.buildBoard();
+            System.out.println("Better luck next time :(");
+        }
+
     }
 }

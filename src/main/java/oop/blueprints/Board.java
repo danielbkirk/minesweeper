@@ -34,8 +34,6 @@ public class Board {
                 calcNoSurroundingMines( i, j);
             }
         }
-        buildBoard();
-
         System.out.println("Your board has been created, have fun!");
 
     }
@@ -97,16 +95,16 @@ public class Board {
     }
 
     public void buildBoard(){
-        String numberRow = "x\\y ";
+        String numberRow = "y\\x ";
         for (int i = 1; i <= this.width; i++){
-            numberRow = numberRow  + i + "   ";
+            numberRow = numberRow  + i + "  ";
         }
         System.out.println(numberRow);
         //printing out grid
         for (int j = 0; j < this.height; j++) {
-            String row = 1+j + " | ";
+            String row = 1+j + "   ";
             for (int i = 0; i < this.width; i++) {
-                row = row +  findDisplayString(i, j) + " | ";
+                row = row +  findDisplayString(i, j) + "  ";
             }
             System.out.println(row);
         }
@@ -114,6 +112,7 @@ public class Board {
 
 
     public void selectTile(int x, int y){
+        myBoard[y][x].useTile();
         findDisplayString( x, y );
     }
     public boolean getHasMine(int x, int y){
@@ -127,7 +126,7 @@ public class Board {
     public String findDisplayString(int x, int y){
         String returnedString = "";
         if( ! myBoard[y][x].beenUsed){
-            returnedString = "?";
+            returnedString = ".";
         } else{
             if ( myBoard[y][x].beenUsed && myBoard[y][x].getMine()){
                 returnedString = "B";
@@ -139,10 +138,21 @@ public class Board {
                     setGameWon();
                 }
             }
-            myBoard[y][x].useTile();
         }
 
         return returnedString;
     }
+
+    //sets all bombs to show - for end of game
+//    public void setAllMines(){
+//        for (int i = 0; i < this.height; i++){
+//            for (int j = 0; i < this.width; j++){
+//                if( myBoard[i][j].getMine() ){
+//                    myBoard[i][j].useTile();
+//                }
+//            }
+//        }
+//    }
+
 
 }

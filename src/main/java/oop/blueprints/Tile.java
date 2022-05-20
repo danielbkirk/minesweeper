@@ -32,7 +32,15 @@ public class Tile {
     public void setMinesAround(){this.minesAround++;}
     public int getMinesAround(){return this.minesAround;}
 
-//    public boolean useFlag(){
-//
-//    }
+    public void setFlag(){
+        if(this.flag){
+            this.flag = false;
+        } else{
+            this.flag = true;
+        }
+    }
+
+    public boolean getFlag(){
+        return this.flag;
+    }
 }
