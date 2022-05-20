@@ -26,7 +26,6 @@ public class Main {
         //while game not over run the loop
         while (!myBoard.getGameOver() && !myBoard.getGameWon()){
             myBoard.buildBoard();
-            System.out.println(myBoard.getEmptyTiles());
             System.out.println("Type 1 to reveal a tile or type 2 to toggle a flag");
             int clickType = myScanner.nextInt();
             if ( clickType == 1 ||  clickType == 2  ) {

@@ -175,11 +175,9 @@ public class Board {
                     if( !myBoard[i][j].beenUsed){
                         selectTile(j, i);
                     }
-
                 }
             }
         }
-
     }
 
 }
