@@ -95,14 +95,15 @@ public class Board {
     }
 
     public void buildBoard(){
-        String numberRow = "y\\x ";
+        String numberRow = "y\\x  ";
         for (int i = 1; i <= this.width; i++){
             numberRow = numberRow  + i + "  ";
         }
         System.out.println(numberRow);
+
         //printing out grid
         for (int j = 0; j < this.height; j++) {
-            String row = 1+j + "   ";
+            String row = 1+j + "|   ";
             for (int i = 0; i < this.width; i++) {
                 row = row +  findDisplayString(i, j) + "  ";
             }
